@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+filename = File.expand_path '~/.ssh/id_rsa.pub'
+if !File.exists?(filename)
+	puts "No public RSA key exists.  Please generate one with ssk-keygen -t rsa"
+	return
+end
+
+keyfile = File.open(filename, 'r')
+key = keyfile.readline.chomp
+keyfile.close
+
+exec "ssh %s \"echo '%s' >> ~/.ssh/authorized_keys\"" % [ $*[0], key ]
