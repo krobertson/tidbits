@@ -1,0 +1,11 @@
+--- subversion-1.4.6/subversion/mod_dav_svn/mod_dav_svn.c	2006-08-10 13:58:33.000000000 -0700
++++ subversion-1.4.6-custom/subversion/mod_dav_svn/mod_dav_svn.c	2008-03-01 13:58:38.000000000 -0800
+@@ -295,7 +295,7 @@
+     dav_svn_dir_conf *conf;
+ 
+     conf = ap_get_module_config(r->per_dir_config, &dav_svn_module);
+-    return conf->fs_parent_path;
++    return apr_pstrcat(r->pool, conf->fs_parent_path, r->hostname, NULL);
+ }
+ 
+ AP_MODULE_DECLARE(dav_error *) dav_svn_get_repos_path(request_rec *r, 
