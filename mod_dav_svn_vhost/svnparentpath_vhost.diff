@@ -5,7 +5,7 @@
  
      conf = ap_get_module_config(r->per_dir_config, &dav_svn_module);
 -    return conf->fs_parent_path;
-+    return apr_pstrcat(r->pool, conf->fs_parent_path, r->hostname, NULL);
++    return apr_pstrcat(r->pool, conf->fs_parent_path, "/", r->hostname, NULL);
  }
  
  AP_MODULE_DECLARE(dav_error *) dav_svn_get_repos_path(request_rec *r, 
