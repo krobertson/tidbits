@@ -1,0 +1,17 @@
+--- subversion-1.4.6/subversion/mod_authz_svn/mod_authz_svn.c	2006-03-02 01:59:29.000000000 -0800
++++ subversion-1.4.6-custom/subversion/mod_authz_svn/mod_authz_svn.c	2008-03-31 20:16:42.000000000 -0700
+@@ -239,11 +239,12 @@
+     }
+ 
+     /* Retrieve/cache authorization file */
+-    cache_key = apr_pstrcat(r->pool, "mod_authz_svn:", conf->access_file, NULL);
++    char *mapped_access_file = apr_pstrcat(r->pool, conf->access_file, "/", r->hostname, NULL);
++    cache_key = apr_pstrcat(r->pool, "mod_authz_svn:", mapped_access_file, NULL);
+     apr_pool_userdata_get(&user_data, cache_key, r->connection->pool);
+     access_conf = user_data;
+     if (access_conf == NULL) {
+-        svn_err = svn_repos_authz_read(&access_conf, conf->access_file,
++        svn_err = svn_repos_authz_read(&access_conf, mapped_access_file,
+                                        TRUE, r->connection->pool);
+         if (svn_err) {
+             ap_log_rerror(APLOG_MARK, APLOG_ERR,
