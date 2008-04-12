@@ -1,0 +1,48 @@
+h1. Subversion+Apache Virtual Hosts
+
+These are a collection of patch files for Subversion 1.4.6 that update it to support virtual hosts.
+
+Might seem odd, but why have Subversion modifications in a git repository?  Sometimes, still find myself using Subversion and found myself wanting to implement this type of configuration.
+
+h2. Modifications
+
+h3. svnparentpath_vhost.diff
+
+This patch file updates the SVNParentPath directive to take into account the host header when searching for repositories.  The default SVNParentPath only looks for repositories within the directory specified.  It doesn't support nested repositories.  While there was a patch out there to allow it to support recursively finding repositories, I was really after virtual host support.
+
+*Usage:*
+
+  SVNParentPath /var/repos
+
+Then your file structure is as follows:
+
+  /var/repos/vhost1.domain.com/repo1
+  /var/repos/vhost1.domain.com/repo2
+  /var/repos/vhost2.domain.com/repo1
+  /var/repos/vhost2.domain.com/repo2
+
+And the repository URLs are:
+
+  http://vhost1.domain.com/repo1
+  http://vhost1.domain.com/repo2
+  http://vhost2.domain.com/repo1
+  http://vhost2.domain.com/repo2
+
+h3. authzsvn-vhost.diff
+
+This patch modifies the updates the AuthzSVNAccessFile directive to instead of looking for a file to be used to control read/write access within Subversion, it will expect a directory which contains a number of files named by the virtual host.
+
+*Usage:*
+
+To use the modification, use the directive as normal within Apache.
+
+  AuthzSVNAccessFile /etc/apache/svn-authz
+
+Then your file structure should have /etc/apache/svn-authz as a directory, containing normal authz files.
+
+  /etc/apache/svn-authz/vhost1.domain.com
+  /etc/apache/svn-authz/vhost2.domain.com
+
+h2. Changes
+
+* April 11, 2007 -- Initial release
